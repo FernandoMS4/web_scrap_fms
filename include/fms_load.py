@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.dialects.mysql import insert
-from fms_database_generate import create_engine_db,Products
+from .fms_database_generate import create_engine_db,Products
 
 
 

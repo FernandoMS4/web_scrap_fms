@@ -1,0 +1,21 @@
+services:
+  db:
+    image: mysql:8
+    container_name: mysql_database
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "web_scraping"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - public_network 
+
+volumes:
+  mysql_data:
+
+networks:
+  public_network:
+    driver: bridge

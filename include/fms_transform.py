@@ -12,7 +12,7 @@ def format_scrapy_mercado_livre(reprocess: bool) -> bool:
     if reprocess == False:
         try:
             df: pd.DataFrame = pd.read_json(
-                '../../data/files/produtos_teste.jsonl',
+                'data/files/produtos_teste.jsonl',
                 dtype='str',
                 lines=True,
             )
@@ -20,7 +20,7 @@ def format_scrapy_mercado_livre(reprocess: bool) -> bool:
             return print(f'Não foi possível ler o arquivo: {e}')
     elif reprocess == True:
         try:
-            files: list = [f for f in os.listdir('../../data/archive/')]
+            files: list = [f for f in os.listdir('data/archive/')]
             df: pd.DataFrame = pd.DataFrame()
             for i in files:
                 df_concat = pd.read_json(
