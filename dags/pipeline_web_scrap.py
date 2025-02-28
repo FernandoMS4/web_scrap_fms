@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 @dag( 
-        dag_id="dag_fernando_2",
+        dag_id="webscrapping",
         description="minha etl pica",
         schedule="*/5 * * * *",
         start_date=datetime(2025,2,26),

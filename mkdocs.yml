@@ -1,0 +1,8 @@
+site_name: Docs FMS
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mermaid2:

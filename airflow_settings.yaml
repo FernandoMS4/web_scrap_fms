@@ -11,8 +11,8 @@ airflow:
       conn_type:
       conn_host:
       conn_schema:
-      conn_login:
-      conn_password:
+      conn_login: 
+      conn_password: 
       conn_port:
       conn_extra:
         example_extra_field: example-value
