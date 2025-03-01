@@ -1,10 +1,13 @@
-from airflow.decorators import dag,task
-from include.fms_extract import captura_produtos_mercado_livre
-from include.fms_transform import format_scrapy_mercado_livre
-from include.fms_load import inserir_dados_csv
-import os
 import json
+import os
 from datetime import datetime
+
+from airflow.decorators import dag, task
+
+from include.fms_extract import captura_produtos_mercado_livre
+from include.fms_load import inserir_dados_csv
+from include.fms_transform import format_scrapy_mercado_livre
+
 
 @dag( 
         dag_id="webscrapping",

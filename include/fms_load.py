@@ -1,7 +1,7 @@
-from sqlalchemy.orm import Session
 from sqlalchemy.dialects.mysql import insert
-from .fms_database_generate import create_engine_db,Products
+from sqlalchemy.orm import Session
 
+from .fms_database_generate import Products, create_engine_db
 
 
 def inserir_dados_csv(dtframe):

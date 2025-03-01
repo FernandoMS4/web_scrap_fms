@@ -1,13 +1,13 @@
 
-from time import sleep
-from sqlalchemy.dialects.mysql import insert,TEXT
-from sqlalchemy.orm import declarative_base,Session
-from sqlalchemy import String,Column,Text,Float,Integer,DateTime,TIMESTAMP,text,ForeignKey
-from sqlalchemy import create_engine
-import mysql.connector
 import os
-from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
+
+import mysql.connector
+from dotenv import find_dotenv, load_dotenv
+from sqlalchemy import (TIMESTAMP, Column, DateTime, Float, ForeignKey,
+                        Integer, String, Text, create_engine, text)
+from sqlalchemy.dialects.mysql import TEXT
+from sqlalchemy.orm import  declarative_base
 
 load_dotenv(find_dotenv())
 
@@ -312,6 +312,7 @@ def verificar_database():
         print(f'Erro ao verificar/criar o banco de dados: {err}')
 
 if __name__ == '__main__':
-    verificar_database()
-    sleep(3)
-    create_engine_db()
+    print("testes")
+    # verificar_database()
+    # sleep(3)
+    # create_engine_db()

@@ -1,8 +1,8 @@
-import json
+import time
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup as bs
-from datetime import datetime
-import time
 
 
 def captura_produtos_mercado_livre(url: str):
