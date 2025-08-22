@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
-# import json
-# import os
+import json
+import os
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -33,17 +33,18 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
     session.headers.update(headers)
 
     try:
-        response = session.get(url, timeout=10)
+        print("Iniciando a requisição")
+        time.sleep(1)
+        response = session.get(url, timeout=10,allow_redirects=False)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print("Erro na requisição:", e)
         return
 
-    url1: str = url  
+    print(f"Status da requisição: {response.status_code}")
 
-    response: str = requests.get(url1,headers=headers_)
-    code = response.status_code
-
+    time.sleep(1)
+    
     if response.status_code == 200:
         soup = bs(response.text, 'html.parser')
         
@@ -115,7 +116,6 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
     time.sleep(1)
 
 if __name__ == '__main__':
-    pass
     # headers = {
     #     "Host": "lista.mercadolivre.com.br",
     #     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
@@ -130,17 +130,17 @@ if __name__ == '__main__':
     #     "Priority": "u=0, i"
     # }
 
-    #url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
+    url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
     #captura_produtos_mercado_livre(url=url)
-    # if os.path.exists('data') == False:
-    #         os.mkdir('data')
-    # if os.path.exists('data/archive') == False:
-    #         os.mkdir('data/archive')
-    # if os.path.exists('data/files') == False:
-    #         os.mkdir('data/files')
+    if os.path.exists('data') == False:
+            os.mkdir('data')
+    if os.path.exists('data/archive') == False:
+            os.mkdir('data/archive')
+    if os.path.exists('data/files') == False:
+            os.mkdir('data/files')
 
-    # with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
-    #       for i in captura_produtos_mercado_livre(url=url,headers_=headers):
-    #           file.write(json.dumps(i, ensure_ascii=False) + '\n')
-
+    with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
+          for i in captura_produtos_mercado_livre(url=url,headers_=headers):
+              file.write(json.dumps(i, ensure_ascii=False) + '\n')
+    pass
 
