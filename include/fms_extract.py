@@ -1,126 +1,136 @@
 import time
 from datetime import datetime
+# import json
+# import os
 
 import requests
 from bs4 import BeautifulSoup as bs
 
 
-def captura_produtos_mercado_livre(url: str):
+headers = {
+    "Host": "lista.mercadolivre.com.br",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "pt-BR,en;q=0.5",
+    "Alt-Used": "lista.mercadolivre.com.br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Priority": "u=0, i"
+}
+
+def captura_produtos_mercado_livre(url: str,headers_= headers):
 
     """
     Captura dados do Mercado Livre, recebendo uma url como parametro para realizar o parse no site e capturar os produtos.
     url = "https://example.com"
 
     """
-    url1: str = url
-    while url1 != '':
-        response: str = requests.get(url1)
-        if response.status_code == 200:
-            soup = bs(response.text, 'html.parser')
 
-            produtos = soup.find_all(
-                'div',
-                class_='andes-card poly-card poly-card--grid-card andes-card--flat andes-card--padding-0 andes-card--animated',
-            )
-            if produtos is None or produtos == []:
-                produtos = soup.find_all(
-                    'div', class_='poly-card poly-card--list'
-                )
+    url1: str = url  
 
-            next_url = soup.find(
-                'li',
-                class_='andes-pagination__button andes-pagination__button--next',
-            )
-            if next_url is None:
-                url1 = ''
+    response: str = requests.get(url1,headers=headers_)
+    code = response.status_code
+
+    if response.status_code == 200:
+        soup = bs(response.text, 'html.parser')
+        
+        produtos = soup.find_all(
+            'li',
+            class_='ui-search-layout__item',
+        )
+
+        if not produtos:
+            raise("Não foi possível encontrar produtos")
+        for produto in produtos:
+            product_name = produto.find('img')['title']
+            
+            if produto.find(class_='poly-reviews__rating'):
+                reviews = produto.find(class_='poly-reviews__rating').text
             else:
-                url1 = next_url.find('a', href=True)['href']
+                reviews = None
+            if produto.find(class_='poly-reviews__total'):
+                reviews_qtd = produto.find(class_='poly-reviews__total').text
+            else: 
+                reviews_qtd = None
+            
+            #print(reviews_qtd)
+            
+            if produto.find(class_='andes-money-amount__currency-symbol'):
+                product_price_local = produto.find(class_='andes-money-amount__currency-symbol').text
+            else:
+                product_price_local = None
+            #print(product_price_local)
+            if produto.find_all(class_ ='andes-money-amount__fraction'):
+                product_price_from = produto.find_all(class_ ='andes-money-amount__fraction')[0].text
+            else:
+                product_price_from = None    
+            #print(product_price_from)
+            product_price_from_cents = '0'
+            if produto.find_all(class_ ='andes-money-amount__fraction'):
+                product_price_to = produto.find_all(class_ ='andes-money-amount__fraction')[1].text
+            else:
+                product_price_to = None
+            #print(product_price_to)
+            product_price_to_cents = '0'
+            if produto.find('a')['href']:
+               product_url = produto.find('a')['href']
+            else:
+                product_url = None
+            #print(product_url)
+            if produto.find(class_='poly-component__picture'):
+                product_img = produto.find(class_='poly-component__picture')['src']
+            else:
+                product_img = None
+            #print(product_img)
+            yield {
+                'product_name': product_name or None,
+                'reviews': reviews or "0",
+                'reviews_qtd': reviews_qtd or "0",
+                'product_price_local': product_price_local or None,
+                'product_price_from_fraction': product_price_from or "0",
+                'product_price_from_cents': product_price_from_cents or "0",
+                'product_price_to': product_price_to or None,
+                'product_price_to_cents': product_price_to_cents or "0",
+                'product_url': product_url,
+                'product_image': product_img,
+                'modified_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
 
-            for produto in produtos:
-
-                product_name = produto.find(
-                    'a', class_='poly-component__title'
-                )
-                reviews = produto.find('span', class_='poly-reviews__rating')
-                reviews_qtd = produto.find(
-                    'span', class_='poly-reviews__total'
-                )
-                product_price_local = produto.find(
-                    'span', class_='andes-money-amount__currency-symbol'
-                )
-                product_price_from = produto.find(
-                    's',
-                    class_='andes-money-amount andes-money-amount--previous andes-money-amount--cents-comma',
-                )
-                product_price_from_cents = '0'
-                if product_price_from is not None:
-                    product_price_from_cents = product_price_from.find(
-                        'span', class_='andes-money-amount__cents'
-                    )
-                    if product_price_from_cents is not None:
-                        product_price_from_cents = product_price_from.find(
-                            'span', class_='andes-money-amount__cents'
-                        ).text
-                product_price_to = (
-                    produto.find('div', class_='poly-price__current')
-                    .find('span', class_='andes-money-amount__fraction')
-                    .text
-                )
-                product_price_to_cents = produto.find(
-                    'div', class_='poly-price__current'
-                ).find('span', class_='andes-money-amount__cents')
-                product_url = produto.find('a')['href']
-                product_img = ''
-                if (
-                    'data:image'
-                    in produto.find('img', class_='poly-component__picture')[
-                        'src'
-                    ]
-                ):
-                    product_img = produto.find(
-                        'img', class_='poly-component__picture'
-                    )['data-src']
-                else:
-                    product_img = produto.find(
-                        'img', class_='poly-component__picture'
-                    )['src']
-
-                yield {
-                    'product_name': None
-                    if product_name is None
-                    else product_name.get_text(strip=True),
-                    'reviews': '0'
-                    if reviews is None
-                    else reviews.get_text(strip=True),
-                    'reviews_qtd': '0'
-                    if reviews_qtd is None
-                    else reviews_qtd.get_text(strip=True),
-                    'product_price_local': None
-                    if product_price_local is None
-                    else product_price_local.get_text(strip=True),
-                    'product_price_from_fraction': '0'
-                    if product_price_from is None
-                    else product_price_from.find(
-                        'span', class_='andes-money-amount__fraction'
-                    ).get_text(strip=True),
-                    'product_price_from_cents': '0'
-                    if product_price_from_cents is None
-                    else product_price_from_cents,
-                    'product_price_to': product_price_to,
-                    'product_price_to_cents': '0'
-                    if product_price_to_cents is None
-                    else product_price_to_cents.text,
-                    'product_url': product_url,
-                    'product_image': product_img,
-                    'modified_date': datetime.now().strftime(
-                        '%y-%m-%d %H:%M:%S'
-                    ),
-                }
+    else:
+        raise(f"Não foi possível realizar a coleta: status[{code}]")
+   
     time.sleep(1)
 
-
 if __name__ == '__main__':
-    
-    url = 'https://lista.mercadolivre.com.br/controle-sem-fio#D[A:controle%20sem%20fio]'
-    
-    print(captura_produtos_mercado_livre(url=url))
+    pass
+    # headers = {
+    #     "Host": "lista.mercadolivre.com.br",
+    #     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+    #     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    #     "Accept-Language": "pt-BR,en;q=0.5",
+    #     "Alt-Used": "lista.mercadolivre.com.br",
+    #     "Connection": "keep-alive",
+    #     "Upgrade-Insecure-Requests": "1",
+    #     "Sec-Fetch-Dest": "document",
+    #     "Sec-Fetch-Mode": "navigate",
+    #     "Sec-Fetch-Site": "cross-site",
+    #     "Priority": "u=0, i"
+    # }
+
+    # url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
+
+    # if os.path.exists('data') == False:
+    #         os.mkdir('data')
+    # if os.path.exists('data/archive') == False:
+    #         os.mkdir('data/archive')
+    # if os.path.exists('data/files') == False:
+    #         os.mkdir('data/files')
+
+    # with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
+    #       for i in captura_produtos_mercado_livre(url=url,headers_=headers):
+    #           file.write(json.dumps(i, ensure_ascii=False) + '\n')
+
+

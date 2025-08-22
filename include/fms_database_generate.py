@@ -9,6 +9,8 @@ from sqlalchemy import (TIMESTAMP, Column, DateTime, Float, ForeignKey,
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm import  declarative_base
 
+from airflow.models import Variable
+
 load_dotenv(find_dotenv())
 
 
@@ -17,11 +19,12 @@ def get_env(key, default=None):
     return default if value is None else value
 
 
-DB_HOST = get_env('DB_HOST')
-DB_USER = get_env('DB_USER')
-DB_PASSWORD = get_env('DB_PASSWORD')
-DB_PORT = get_env('DB_PORT')
-DB_NAME = get_env('DB_NAME')
+
+DB_HOST = Variable.get('DB_HOST')
+DB_USER = Variable.get('DB_USER')
+DB_PASSWORD = Variable.get('DB_PASSWORD')
+DB_PORT = Variable.get('DB_PORT')
+DB_NAME = Variable.get('DB_NAME')
 
 """
 Variaveis

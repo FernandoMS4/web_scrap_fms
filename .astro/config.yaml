@@ -10,4 +10,4 @@ docker:
 
 env:
   - name: AIRFLOW__WEBSERVER__CAN_TEST_CONNECTION
-    value: "true"
+    value: "false"
