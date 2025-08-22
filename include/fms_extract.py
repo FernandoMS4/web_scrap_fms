@@ -37,7 +37,7 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
         time.sleep(1)
         response = session.get(url, timeout=10,allow_redirects=False)
         print(f"Status da requisição: {response.status_code}\n")
-        print(response.headers.get("Location\n"))
+        print(f"Redirecionado para: {response.headers.get("Location")}")
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print("Erro na requisição:", e)
