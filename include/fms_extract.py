@@ -17,9 +17,10 @@ from bs4 import BeautifulSoup as bs
 headers = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0" ,
   "Accept": "text/css,*/*;q=0.1" ,
   "Accept-Language": "en-US,en;q=0.5",}
-# cookies = {
-
-# }
+cookies = {
+    "_d2id":"0d46b7c4-9618-4078-8bd6-d4ffedf77023",
+    "_hjSessionUser_720738":"eyJpZCI6IjQzZTRiNzY1LTk3MDMtNTQzYy1iZTUxLWY2NjM3MjZmMjU3ZSIsImNyZWF0ZWQiOjE3NDYxMDY0MzMyMjYsImV4aXN0aW5nIjp0cnVlfQ=="
+}
 
 def captura_produtos_mercado_livre(url: str):
 
@@ -30,7 +31,7 @@ def captura_produtos_mercado_livre(url: str):
     """
     session = requests.Session()
     session.headers.update(headers)
-    # session.cookies.update(cookies)
+    session.cookies.update(cookies)
 
     try:
         print("Iniciando a requisição")
