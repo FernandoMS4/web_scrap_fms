@@ -29,7 +29,7 @@ def pipeline():
 
     @task
     def captura_produto():
-        url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
+        url = 'https://lista.mercadolivre.com.br/wap-barbecues#D[A:wap%20barbecues]'
         with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
           for i in captura_produtos_mercado_livre(url=url):
               file.write(json.dumps(i, ensure_ascii=False) + '\n')
