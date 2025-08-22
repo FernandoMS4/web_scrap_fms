@@ -29,6 +29,16 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
 
     """
 
+    session = requests.Session()
+    session.headers.update(headers)
+
+    try:
+        response = session.get(url, timeout=10)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print("Erro na requisição:", e)
+        return
+
     url1: str = url  
 
     response: str = requests.get(url1,headers=headers_)
@@ -120,8 +130,8 @@ if __name__ == '__main__':
     #     "Priority": "u=0, i"
     # }
 
-    # url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
-
+    #url = 'https://lista.mercadolivre.com.br/wap-barbecue-110'
+    #captura_produtos_mercado_livre(url=url)
     # if os.path.exists('data') == False:
     #         os.mkdir('data')
     # if os.path.exists('data/archive') == False:
