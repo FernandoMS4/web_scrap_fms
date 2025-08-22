@@ -7,20 +7,27 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-# headers = {
-#     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
-#     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-# }
-
-
-
-headers = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0" ,
-  "Accept": "text/css,*/*;q=0.1" ,
-  "Accept-Language": "en-US,en;q=0.5",}
-cookies = {
-    "_d2id":"0d46b7c4-9618-4078-8bd6-d4ffedf77023",
-    "_hjSessionUser_720738":"eyJpZCI6IjQzZTRiNzY1LTk3MDMtNTQzYy1iZTUxLWY2NjM3MjZmMjU3ZSIsImNyZWF0ZWQiOjE3NDYxMDY0MzMyMjYsImV4aXN0aW5nIjp0cnVlfQ=="
+headers = {
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1"
 }
+
+cookies = {
+    "_mldataSessionId": "038ee4cb-0021-4169-a08e-c8b480faad8a",
+    "backend_dejavu_info": "j:{}",
+    "categories": "",
+    "category": "MLB456045",
+    "compats-widgetSearch": "",
+    "last_query": "wap barbecue 110",
+    "main_attributes": "",
+    "main_domain": ""
+}
+
+
+
 
 def captura_produtos_mercado_livre(url: str):
 
