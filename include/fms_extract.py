@@ -14,9 +14,9 @@ from bs4 import BeautifulSoup as bs
 
 
 
-headers = {'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0' ,
-  'Accept: text/css,*/*;q=0.1' ,
-  'Accept-Language: en-US,en;q=0.5',}
+headers = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0" ,
+  "Accept": "text/css,*/*;q=0.1" ,
+  "Accept-Language": "en-US,en;q=0.5",}
 # cookies = {
 
 # }
