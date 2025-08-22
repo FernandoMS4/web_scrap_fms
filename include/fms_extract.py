@@ -44,7 +44,7 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
     print(f"Status da requisição: {response.status_code}")
 
     time.sleep(1)
-    
+
     if response.status_code == 200:
         soup = bs(response.text, 'html.parser')
         
@@ -111,7 +111,7 @@ def captura_produtos_mercado_livre(url: str,headers_= headers):
             }
 
     else:
-        raise(f"Não foi possível realizar a coleta: status[{code}]")
+        raise(f"Não foi possível realizar a coleta: status[{response.status_code}]")
    
     time.sleep(1)
 
