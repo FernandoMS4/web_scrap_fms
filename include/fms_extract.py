@@ -16,14 +16,11 @@ headers = {
 }
 
 cookies = {
-    "_mldataSessionId": "038ee4cb-0021-4169-a08e-c8b480faad8a",
-    "backend_dejavu_info": "j:{}",
-    "categories": "",
+    "_d2id" : "62a11780-a1f6-4312-be74-de586eef6d8f-n",
+    "_csrf" : "l4Myl7-z08CGbDtIocc9QjU8",
     "category": "MLB456045",
-    "compats-widgetSearch": "",
-    "last_query": "wap barbecue 110",
-    "main_attributes": "",
-    "main_domain": ""
+    "_mldataSessionId" :"891cecf3-4c3d-4259-aa45-a6f31116e1f5",
+    "c_ui-navigation" : "6.6.144" 
 }
 
 
