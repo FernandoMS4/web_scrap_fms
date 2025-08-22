@@ -7,22 +7,25 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-}
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+#     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+# }
 
+# cookies = {
 
-def captura_produtos_mercado_livre(url: str,headers_= headers):
+# }
+
+def captura_produtos_mercado_livre(url: str):
 
     """
     Captura dados do Mercado Livre, recebendo uma url como parametro para realizar o parse no site e capturar os produtos.
     url = "https://example.com"
 
     """
-
     session = requests.Session()
-    session.headers.update(headers)
+    # session.headers.update(headers)
+    # session.cookies.update(cookies)
 
     try:
         print("Iniciando a requisição")
