@@ -15,15 +15,6 @@ headers = {
     "Upgrade-Insecure-Requests": "1"
 }
 
-cookies = {
-    "_d2id" : "62a11780-a1f6-4312-be74-de586eef6d8f-n",
-    "_csrf" : "l4Myl7-z08CGbDtIocc9QjU8",
-    "category": "MLB456045",
-    "_mldataSessionId" :"891cecf3-4c3d-4259-aa45-a6f31116e1f5",
-    "c_ui-navigation" : "6.6.144" 
-}
-
-
 
 
 def captura_produtos_mercado_livre(url: str):
@@ -35,14 +26,16 @@ def captura_produtos_mercado_livre(url: str):
     """
     session = requests.Session()
     session.headers.update(headers)
-    session.cookies.update(cookies)
 
     try:
         print("Iniciando a requisição")
         time.sleep(1)
         response = session.get(url, timeout=10,allow_redirects=False)
+
+        location = response.headers.get("Location")
+
         print(f"Status da requisição: {response.status_code}\n")
-        print(f"Redirecionado para: {response.headers.get("Location")}")
+        print(f"Redirecionado para: {location}")
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print("Erro na requisição:", e)
@@ -146,7 +139,7 @@ if __name__ == '__main__':
             os.mkdir('data/files')
 
     with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
-          for i in captura_produtos_mercado_livre(url=url,headers_=headers):
+          for i in captura_produtos_mercado_livre(url=url):
               file.write(json.dumps(i, ensure_ascii=False) + '\n')
     pass
 

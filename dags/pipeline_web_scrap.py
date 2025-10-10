@@ -12,7 +12,7 @@ from include.fms_transform import format_scrapy_mercado_livre
 @dag( 
         dag_id="webscrapping",
         description="minha etl pica",
-        schedule="*/5 * * * *",
+        schedule="0 * *  * *",
         start_date=datetime(2025,2,26),
         catchup=False
 )
