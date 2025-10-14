@@ -1,4 +1,5 @@
 FROM astrocrpublic.azurecr.io/runtime:3.0-2
+
 EXPOSE 3306
 
 COPY . /usr/local/airflow/

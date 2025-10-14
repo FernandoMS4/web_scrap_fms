@@ -13,7 +13,7 @@ def format_scrapy_mercado_livre(reprocess: bool) -> bool:
     if reprocess == False:
         try:
             df: pd.DataFrame = pd.read_json(
-                'data/files/produtos_teste.jsonl',
+                'data/files/produtos.jsonl',
                 dtype='str',
                 lines=True,
             )

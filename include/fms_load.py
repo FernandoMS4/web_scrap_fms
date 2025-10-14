@@ -5,7 +5,9 @@ from .fms_database_generate import Products, create_engine_db
 
 
 def inserir_dados_csv(dtframe):
+    print("Preparando inserção no banco")
     engine = create_engine_db()
+    print("Conexão bem sucedida!")
     with Session(engine) as session:
         dados = []
         for _, linha in dtframe.iterrows():

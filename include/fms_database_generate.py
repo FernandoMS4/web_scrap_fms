@@ -314,9 +314,32 @@ def verificar_database():
     except mysql.connector.Error as err:
         print(f'Erro ao verificar/criar o banco de dados: {err}')
 
+def lista_prods():
+    "Lista todos os produtos cadastrados para coleta"
+
+    conn = mysql.connector.connect(
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+    )
+    
+    cur = conn.cursor()
+
+    print("Iniciando captura de produtos")
+
+    cur.execute("select product_name from web_scraping.market_place_search_products")
+
+    print("Montando arquivo final")
+    final = [i[0] for i in cur.fetchall()]
+    print("Processo finalizado")
+    return final
+
 if __name__ == '__main__':
     print("testes")
     # verificar_database()
     # sleep(3)
     # create_engine_db()
+
+    print(lista_prods())
     

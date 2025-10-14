@@ -1,69 +1,137 @@
+import requests
 from bs4 import BeautifulSoup as bs
+from datetime import datetime
+import time
+import os
+import mysql.connector
+import json
 
-htm = '<div class="ui-search-result__wrapper"><div class="poly-card poly-card--list poly-card--large poly-card--CORE">' \
-'<div class="poly-card__portada"><img alt="Fritadeira Elétrica Air Fryer WAP Barbecue com Painel Digital e 12 Funções" aria-hidden="true" ' \
-'class="poly-component__picture" decoding="sync" fetchpriority="high" ' \
-'height="150" src="https://http2.mlstatic.com/D_Q_NP_2X_952581-MLU75357540145_032024-V.webp" ' \
-'title="Fritadeira Elétrica Air Fryer WAP Barbecue com Painel Digital e 12 Funções" ' \
-'width="150"/></div><div class="poly-card__content"><span class="poly-component__highlight"' \
-' style="color:#FFFFFF;background-color:#333333">RECOMENDADO</span><h3 class="poly-component__title-wrapper">' \
-'<a class="poly-component__title" ' \
-'href="https://www.mercadolivre.com.br/fritadeira-eletrica-air-fryer-wap-barbecue-com-painel-digital-e-12-funcoes/p/MLB27773891#polycard_client=search-nordic&amp;searchVariation=MLB27773891&amp;wid=MLB3611252531&amp;position=3&amp;search_layout=stack&amp;type=product&amp;tracking_id=f477a3e3-5487-495c-89d3-0b15522ce970&amp;sid=search" ' \
-'target="_self">Fritadeira Elétrica Air Fryer WAP Barbecue com Painel Digital e 12 Funções</a>' \
-'</h3><span class="poly-component__seller">Por Mercado Livre <svg aria-label="Loja oficial" height="12" role="img" viewbox="0 0 12 12" width="12">' \
-'<use href="#poly_cockade"></use></svg></span><div class="poly-content">' \
-'<div class="poly-content__column"><div class="poly-component__price">' \
-'<s aria-label="Antes: 1499 reais" aria-roledescription="Valor" class="andes-money-amount andes-money-amount--previous andes-money-amount--cents-comma" ' \
-'role="img" style="font-size:12px"><span aria-hidden="true" ' \
-'class="andes-money-amount__currency-symbol">R$</span>' \
-'<span aria-hidden="true" class="andes-money-amount__fraction">1.499</span></s>' \
-'<div class="poly-price__current"><span aria-label="Agora: 1133 reais" aria-roledescription="Valor" ' \
-'class="andes-money-amount andes-money-amount--cents-superscript" role="img" ' \
-'style="font-size:24px"><span aria-hidden="true" ' \
-'class="andes-money-amount__currency-symbol">R$</span>' \
-'<span aria-hidden="true" class="andes-money-amount__fraction">1.133</span>' \
-'</span><span class="andes-money-amount__discount" style="font-size:14px">24% OFF</span>' \
-'</div><span class="poly-price__installments" style="color:#00a650">10x <span aria-label="113 reais com 30 centavos" aria-roledescription="Valor" ' \
-'class="andes-money-amount poly-phrase-price andes-money-amount--cents-comma" role="img" style="font-size:inherit"><span aria-hidden="true" ' \
-'class="andes-money-amount__currency-symbol">R$</span><span aria-hidden="true" class="andes-money-amount__fraction">113</span>' \
-'<span aria-hidden="true">,</span><span aria-hidden="true" class="andes-money-amount__cents">30</span>' \
-'</span> sem juros</span></div><div class="poly-component__shipping"><span class="poly-shipping--next_day">Chegará grátis amanhã</span>' \
-'</div><span class="poly-component__shipped-from">Enviado pelo <svg aria-label="FULL" height="13" role="img" viewbox="0 0 41 13" width="41">' \
-'<use href="#poly_full"></use></svg></span></div><div class="poly-content__column"><div class="poly-component__reviews">' \
-'<span class="andes-visually-hidden">Avaliação 4,9 de 5. (1.346 avaliações)</span><span aria-hidden="true" class="poly-reviews__rating">4.9</span>' \
-'<span class="poly-reviews__starts"><svg aria-hidden="true" height="15" viewbox="0 0 15 15" width="15"><use href="#poly_star_fill"></use></svg> ' \
-'<svg aria-hidden="true" height="15" viewbox="0 0 15 15" width="15"><use href="#poly_star_fill"></use></svg> ' \
-'<svg aria-hidden="true" height="15" viewbox="0 0 15 15" width="15"><use href="#poly_star_fill"></use></svg> ' \
-'<svg aria-hidden="true" height="15" viewbox="0 0 15 15" width="15"><use href="#poly_star_fill"></use></svg> ' \
-'<svg aria-hidden="true" height="15" viewbox="0 0 15 15" width="15"><use href="#poly_star_fill"></use></svg>' \
-'</span><span aria-hidden="true" class="poly-reviews__total">(1346)</span></div></div></div></div>' \
-'<div class="poly-component__bookmark" data-testid="bookmark"><button aria-checked="false" aria-label="Favorito" class="poly-bookmark__btn" ' \
-'role="switch" type="button"><svg class="poly-bookmark__icon-full" height="20" viewbox="0 0 20 20" width="20"><use href="#poly_bookmark"></use>' \
-'</svg><svg class="poly-bookmark__icon-empty" height="20" viewbox="0 0 20 20" width="20"><use href="#poly_bookmark"></use></svg></button></div></div></div>'
+headers = {
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1"
+}
 
-soup = bs(htm)
+def lista_prods():
+    "Lista todos os produtos cadastrados para coleta"
 
-reviews = soup.find(class_='poly-reviews__rating').text
+    conn = mysql.connector.connect(
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+    )
+    
+    cur = conn.cursor()
+
+    print("Iniciando captura de produtos")
+
+    cur.execute("select product_name from web_scraping.market_place_search_products")
+
+    print("Montando arquivo final")
+    final = [i[0] for i in cur.fetchall()]
+    print("Processo finalizado")
+    return final
+
+def captura_produtos_mercado_livre(url: str):
+
+    """
+    Captura dados do Mercado Livre, recebendo uma url como parametro para realizar o parse no site e capturar os produtos.
+    url = "https://example.com"
+
+    """
+    session = requests.Session()
+    session.headers.update(headers)
+
+    try:
+        print("Iniciando a requisição")
+        time.sleep(1)
+        response = session.get(url, timeout=10,allow_redirects=False)
+
+        location = response.headers.get("Location")
+
+        print(f"Status da requisição: {response.status_code}\n")
+        print(f"Redirecionado para: {location}")
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print("Erro na requisição:", e)
+        return
 
 
-reviews_qtd = soup.find(class_='poly-reviews__total').text
+    time.sleep(1)
 
+    if response.status_code == 200:
+        soup = bs(response.text, 'html.parser')
+        
+        produtos = soup.find_all(
+            'li',
+            class_='ui-search-layout__item',
+        )
 
-product_price_local = soup.find(class_='andes-money-amount__currency-symbol').text
-print(product_price_local)
+        if not produtos:
+            raise("Não foi possível encontrar produtos")
+        for produto in produtos:
+            product_name = produto.find('img')['title']
+            
+            if produto.find(class_='poly-reviews__rating'):
+                reviews = produto.find(class_='poly-reviews__rating').text
+            else:
+                reviews = None
+            if produto.find(class_='poly-reviews__total'):
+                reviews_qtd = produto.find(class_='poly-reviews__total').text
+            else: 
+                reviews_qtd = None
+            
+            #print(reviews_qtd)
+            
+            if produto.find(class_='andes-money-amount__currency-symbol'):
+                product_price_local = produto.find(class_='andes-money-amount__currency-symbol').text
+            else:
+                product_price_local = None
+            #print(product_price_local)
+            if produto.find_all(class_ ='andes-money-amount__fraction'):
+                product_price_from = produto.find_all(class_ ='andes-money-amount__fraction')[0].text
+            else:
+                product_price_from = None    
+            #print(product_price_from)
+            product_price_from_cents = '0'
+            if produto.find_all(class_ ='andes-money-amount__fraction'):
+                product_price_to = produto.find_all(class_ ='andes-money-amount__fraction')[1].text
+            else:
+                product_price_to = None
+            #print(product_price_to)
+            product_price_to_cents = '0'
+            if produto.find('a')['href']:
+               product_url = produto.find('a')['href']
+            else:
+                product_url = None
+            #print(product_url)
+            if produto.find(class_='poly-component__picture'):
+                product_img = produto.find(class_='poly-component__picture')['src']
+            else:
+                product_img = None
+            #print(product_img)
+            yield {
+                'product_name': product_name or None,
+                'reviews': reviews or "0",
+                'reviews_qtd': reviews_qtd or "0",
+                'product_price_local': product_price_local or None,
+                'product_price_from_fraction': product_price_from or "0",
+                'product_price_from_cents': product_price_from_cents or "0",
+                'product_price_to': product_price_to or None,
+                'product_price_to_cents': product_price_to_cents or "0",
+                'product_url': product_url,
+                'product_image': product_img,
+                'modified_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
 
-product_price_from = soup.find_all(class_ ='andes-money-amount__fraction')[0].text
-print(product_price_from)
+    else:
+        raise(f"Não foi possível realizar a coleta: status[{response.status_code}]")
+   
+    time.sleep(1)
 
-product_price_from_cents = '0'
-
-product_price_to = soup.find_all(class_ ='andes-money-amount__fraction')[1].text
-print(product_price_to)
-
-product_price_to_cents = '0'
-
-product_url = soup.find('a')['href']
-print(product_url)
-
-product_img = soup.find(class_='poly-component__picture')['src']
-print(product_img)
+if __name__ == "__main__":
+    print("oi")
+    print(lista_prods())
