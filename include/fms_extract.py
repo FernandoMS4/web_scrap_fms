@@ -117,9 +117,14 @@ def captura_produtos_mercado_livre(response_=list):
                 else:
                     product_url = None
                 #print(product_url)
+                
                 if produto.find(class_='poly-component__picture'):
-                    try:
+                    if produto.find(class_='poly-component__picture') and 'data:image' not in produto.find(class_='poly-component__picture')['src']:
                         product_img = produto.find(class_='poly-component__picture')['src']
+                if  produto.find(class_='poly-card__portada'):
+                    try:
+                        imagem = produto.find(class_='poly-card__portada').find('img')
+                        product_img = imagem['data-src']
                     except:
                         pass
                 else:
@@ -147,8 +152,17 @@ def captura_produtos_mercado_livre(response_=list):
 
 if __name__ == '__main__':
 
+    print("oi")
+    # produto = get_product(['climatizador-de-ar-wap-air-protect-135w'])
 
-    with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
-        for i in captura_produtos_mercado_livre(response_= get_product(['wap-pbarbecue', 'xiaomi-robot-vacuum-x20-pro'])):
-            file.write(json.dumps(i, ensure_ascii=False) + '\n')
+    # produtos = captura_produtos_mercado_livre(produto)
 
+    # print(produtos)
+
+    # for produto in produtos:
+    # if produto.find(class_='poly-component__picture') and 'data:image' not in produto.find(class_='poly-component__picture')['src']:
+    #     print('Primeiro')
+    #     print(produto.find(class_='poly-component__picture')['src'])
+    # if  produto.find(class_='poly-card__portada'):
+    #     print('Segundo')
+    #     print(produto.find(class_='poly-card__portada').find('img')['data-src'])

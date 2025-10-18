@@ -2,10 +2,9 @@
 import os
 from datetime import datetime
 
-import mysql.connector
 from dotenv import find_dotenv, load_dotenv
 from sqlalchemy import (TIMESTAMP, Column, DateTime, Float, ForeignKey,
-                        Integer, String, Text, create_engine, text)
+                        Integer, String, Text, select,create_engine, text)
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm import  declarative_base
 
@@ -25,6 +24,7 @@ DB_USER = Variable.get('DB_USER')
 DB_PASSWORD = Variable.get('DB_PASSWORD')
 DB_PORT = Variable.get('DB_PORT')
 DB_NAME = Variable.get('DB_NAME')
+
 
 """
 Variaveis
@@ -315,24 +315,16 @@ def verificar_database():
         print(f'Erro ao verificar/criar o banco de dados: {err}')
 
 def lista_prods():
-    "Lista todos os produtos cadastrados para coleta"
-
-    conn = mysql.connector.connect(
-        host=os.getenv('DB_HOST'),
-        port=os.getenv('DB_PORT'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-    )
     
-    cur = conn.cursor()
+    eng = create_engine_db()
 
-    print("Iniciando captura de produtos")
+    query = select(Market_Place_Search_Products.product_name)
 
-    cur.execute("select product_name from web_scraping.market_place_search_products")
+    with eng.connect() as conn:
+        result = conn.execute(query)
 
-    print("Montando arquivo final")
-    final = [i[0] for i in cur.fetchall()]
-    print("Processo finalizado")
+        final = [row[0] for row in result]
+
     return final
 
 if __name__ == '__main__':
@@ -340,6 +332,3 @@ if __name__ == '__main__':
     # verificar_database()
     # sleep(3)
     # create_engine_db()
-
-    print(lista_prods())
-    

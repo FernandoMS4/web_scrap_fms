@@ -37,7 +37,7 @@ def pipeline():
 
     @task
     def captura_produto(lista:list):
-        with open('data/files/produtos.jsonl', 'a', encoding='utf-8') as file:
+        with open('data/files/produtos_teste.jsonl', 'a', encoding='utf-8') as file:
             for i in captura_produtos_mercado_livre(response_= lista):
                 file.write(json.dumps(i, ensure_ascii=False) + '\n')
 
@@ -47,7 +47,7 @@ def pipeline():
         return df
     
     @task
-    def insersao_banco(df):
+    def insercao_banco(df):
         inserir_dados_csv(df)
 
     t1 = data_folder()
@@ -55,7 +55,7 @@ def pipeline():
     t3 = lista_html_produtos(t2)
     t4 = captura_produto(t3)
     t5 = format_arquivo_jsonl()
-    t6 = insersao_banco(t5) 
+    t6 = insercao_banco(t5) 
 
     t1 >> t2 >> t3 >> t4 >> t5 >> t6
 
