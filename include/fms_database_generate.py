@@ -3,9 +3,12 @@ import os
 from datetime import datetime
 
 from dotenv import find_dotenv, load_dotenv
+
 from sqlalchemy import (TIMESTAMP, Column, DateTime, Float, ForeignKey,
                         Integer, String, Text, select,create_engine, text)
+
 from sqlalchemy.dialects.mysql import TEXT
+
 from sqlalchemy.orm import  declarative_base
 
 from airflow.models import Variable

@@ -1,8 +1,35 @@
-site_name: Docs FMS
-
+site_name: Documentação Projeto FMS
+site_description: Documentação  projeto de web scrappgin.
+site_author: Fernando e Felipe
 theme:
   name: material
+  language: pt
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: deep purple
+      
 
-plugins:
-  - search
-  - mermaid2:
+nav:
+  - Home: index.md
+  - Modulos: 
+    - Extracao de Dados: modulos/extracao_dados.md
+    - Transformacao de Dados: modulos/transformacao_dados.md
+    - Carga de Dados: modulos/carregamento_dados.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - tables
+
